@@ -1,10 +1,8 @@
 pipeline {
-    agent none
+    agent any
     stages {
         stage('Build') {
-            agent {
-                label 'apache'
-              }
+           
             steps {
                 echo 'Running build automation'
                 sh './gradlew build --no-daemon'
@@ -13,9 +11,7 @@ pipeline {
         }
         
          stage('DeployToStaging') {
-             agent {
-                label 'apache'
-              }
+             
             when {
                 branch 'master'
             }
@@ -46,16 +42,12 @@ pipeline {
             }
 }
         stage('DeployToProduction') {
-            agent {
-                label 'apache'
-              }
+            
             when {
                 branch 'master'
             }
             steps {
-                agent {
-                    label 'apache'
-                  }
+                
                 input 'Does the staging environment look OK?'
                 milestone(1)
                 withCredentials([usernamePassword(credentialsId: 'webserver_login', usernameVariable: 'USERNAME', passwordVariable: 'USERPASS')]) {
